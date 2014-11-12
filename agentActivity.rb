@@ -1,8 +1,8 @@
 #
-# Name       : Voice Current Queue
+# Name       : Agent Activity
 # Date       : 2014-11-11
 # Author     : Matt Barker
-# Description: Calls the ZD voice API and sends the voice queue
+# Description: Calls the ZD voice API and sends the agent activity
 #              status to Ducksboard
 # Gems       : rest-client
 # Parameters : -ZD subdomain
@@ -45,7 +45,9 @@ payload = {"value"=>board}
 
 #process each of the agents in the result set
 result["historical_queue_activity"]["agents_activity"].each { |agent|
-  agent_details = {"name"=>agent["name"], "values" => [agent["calls_accepted"].to_s, agent["status"]]}
+  unless agent["status_code"] == "not_available" then
+    agent_details = {"name"=>agent["name"], "values" => [agent["calls_accepted"].to_s, agent["status"]]}
+  end
   boards.push(agent_details) }
   
 puts payload.to_json
